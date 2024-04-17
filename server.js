@@ -1,29 +1,105 @@
 const express = require("express");
 
 const app = express();
-const port =8080;
-const dataFromJson = require('./Movie data/data.json');
 
-function MovieData(title , poster_path , overview){
+const dataFromJson = require('./Movie data/data.json');
+const { default: axios } = require("axios");
+
+require('dotenv').config()
+const port = process.env.PORT
+const apiKey = process.env.API_KEY
+
+//constructor
+
+function MovieData11(title , poster_path , overview){
 this.title=title;
 this.poster_path=poster_path;
 this.overview=overview;
 }
+function MovieData12(id,title ,release_date, poster_path , overview){
+    this.id=id;
+    this.release_date=release_date;
+    this.title=title;
+    this.poster_path=poster_path;
+    this.overview=overview;
+    }
 
+
+
+//routes
 app.get('/',dataHandler);
-app.get('/favorite',favHandler)
+app.get('/favorite',favHandler);
+app.get('/trending',trendingHandler);
+app.get('/searchMovie',searchMovieHandler);
+app.get('/airingToday',airingTodayHandler);
+app.get('/availableRegions',availableRegionsHandler);
 
-//home page handler
+//functions
 
 function dataHandler(req,res){
-    const result=new MovieData(dataFromJson.title , dataFromJson.poster_path , dataFromJson.overview);
+    const result=new MovieData11(dataFromJson.title , dataFromJson.poster_path , dataFromJson.overview);
     res.json(result);
     }
-//favorite page handler
-    function favHandler(req,res){
+
+ function favHandler(req,res){
         res.send("Welcome to Favorite Page");
     }
-    
+ 
+function trendingHandler(req,res){
+        let url=`https://api.themoviedb.org/3/trending/all/week?api_key=18976591dc16bc5a0867e48d4ff172ec`;
+        axios.get(url)
+        .then(result2=>{
+            let movieData12=result2.data.results.map(movie=>{
+                return new MovieData12(movie.id,movie.title,movie.release_date,movie.poster_path,movie.overview)
+            });
+            
+            
+            res.json(movieData12);
+        })
+        .catch(error=>{
+            console.log(error);
+        })
+    }
+
+    function searchMovieHandler(req,res){
+           
+           let movieName=req.query.title;
+           console.log(movieName);
+           let url=`https://api.themoviedb.org/3/search/movie?query=${movieName}&api_key=18976591dc16bc5a0867e48d4ff172ec`
+           axios.get(url)
+           .then(result=>{
+            res.json(result.data.results)
+           })
+           .catch(error=>{
+            console.log(error);
+        })
+    }
+    function airingTodayHandler(req,res){
+           
+        let url=`https://api.themoviedb.org/3/tv/airing_today?&api_key=18976591dc16bc5a0867e48d4ff172ec`
+        axios.get(url)
+        .then(result=>{
+         res.json(result.data.results)
+        })
+        .catch(error=>{
+         console.log(error);
+     })
+ }
+
+ function availableRegionsHandler(req,res){
+           
+    let url=`https://api.themoviedb.org/3/watch/providers/regions?&api_key=18976591dc16bc5a0867e48d4ff172ec`
+    axios.get(url)
+    .then(result=>{
+     res.json(result.data.results)
+    })
+    .catch(error=>{
+     console.log(error);
+ })
+}
+
+
+
 //error 404
 app.use('*', errorHandler404)
 function errorHandler404(req, res, next) {
@@ -48,8 +124,10 @@ app.use((err, req, res, next) => {
 });
 
 
-
+//app listener
 app.listen(port , () => {
   
     console.log("Listening to port ",port);
   });
+
+  

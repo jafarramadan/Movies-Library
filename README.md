@@ -3,7 +3,7 @@
 **Author Name**: Jafar mohammad ramadan
 
 ## WRRC
-![](./wrrc.PNG)
+![](./wrrc2.PNG)
 
 ## Overview
 
@@ -22,9 +22,17 @@
 
 6-Handle Errors
 
+
 ## Project Features
 Home Page Endpoint (/): Display information about a specific movie.
 
 Favorite Page Endpoint (/favorite): Display a welcome message for the favorite page.
 
 Error Handling: Functions to handle server errors (status 500) and "page not found" errors (status 404).
+
+Trending Page Endpoint (/trending): Display trending movies.
+
+Discover Page Endpoint (/searchMovie).
+
+Popular Page Endpoint (/availableRegions).
+
