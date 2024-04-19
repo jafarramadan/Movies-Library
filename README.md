@@ -3,7 +3,7 @@
 **Author Name**: Jafar mohammad ramadan
 
 ## WRRC
-![](./wrrc2.PNG)
+![](./wrrc3.PNG)
 
 ## Overview
 
@@ -35,4 +35,8 @@ Trending Page Endpoint (/trending): Display trending movies.
 Discover Page Endpoint (/searchMovie).
 
 Popular Page Endpoint (/availableRegions).
+
+add movie page Endpoint(/addMovie).
+
+get movie page Endpoint(/getMovies).
 
