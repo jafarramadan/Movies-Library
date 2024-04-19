@@ -6,8 +6,17 @@ const dataFromJson = require('./Movie data/data.json');
 const { default: axios } = require("axios");
 
 require('dotenv').config()
-const port = process.env.PORT
+const port = process.env.PORT||8080;
 const apiKey = process.env.API_KEY
+
+const bodyParser= require('body-parser');
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
+const { Client } = require('pg');
+const url = `postgress://jafar:0000@localhost:5432/movies`
+const client = new Client(url);
 
 //constructor
 
@@ -32,7 +41,11 @@ app.get('/favorite',favHandler);
 app.get('/trending',trendingHandler);
 app.get('/searchMovie',searchMovieHandler);
 app.get('/airingToday',airingTodayHandler);
-app.get('/availableRegions',availableRegionsHandler);
+app.get('/  ',availableRegionsHandler);
+
+app.post('/addMovie',addMovieHandler);
+app.get('/getMovies',getMoviesHandler);
+
 
 //functions
 
@@ -100,6 +113,39 @@ function trendingHandler(req,res){
 
 
 
+function addMovieHandler(req,res){
+    const id=req.body.id;
+    const title=req.body.title;
+    const time=req.body.time;
+    const comment=req.body.comment;
+
+    const sql= `INSERT INTO movie(id,title,time,comment)
+    VALUES ($1 , $2 , $3 , $4);`
+
+    const values =[id,title,time,comment]
+    client.query(sql,values)
+    .then(()=>{
+        res.status(201).send("data recieved to movies database")
+    })
+    .catch()
+
+}
+
+
+function getMoviesHandler(req,res){
+    const sql=`SELECT * FROM movie`
+    client.query(sql)
+    
+    .then((result)=>{
+        const data=result.rows;
+        res.json(data)
+    })
+    .catch()
+    
+}
+
+
+
 //error 404
 app.use('*', errorHandler404)
 function errorHandler404(req, res, next) {
@@ -125,9 +171,11 @@ app.use((err, req, res, next) => {
 
 
 //app listener
-app.listen(port , () => {
+client.connect()
+.then(app.listen(port , () => {
   
     console.log("Listening to port ",port);
-  });
+  }))
+.catch()
 
   
