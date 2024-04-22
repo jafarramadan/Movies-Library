@@ -20,7 +20,9 @@
 
 5-Build Routes
 
-6-Handle Errors
+6-build functions
+
+7-Handle Errors
 
 
 ## Project Features
@@ -39,4 +41,11 @@ Popular Page Endpoint (/availableRegions).
 add movie page Endpoint(/addMovie).
 
 get movie page Endpoint(/getMovies).
+
+update movie by id page endpoint(/editMovie).  
+
+delete movie by id  page endpoint(/deleteMovie). 
+
+get movie by id page endpoint(/getMoviesID).
+
 
