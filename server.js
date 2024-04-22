@@ -46,6 +46,10 @@ app.get('/  ',availableRegionsHandler);
 app.post('/addMovie',addMovieHandler);
 app.get('/getMovies',getMoviesHandler);
 
+app.put('/editMovie/:id',editMovieHandler);
+app.delete('/deleteMovie/:id',deleteMovieHandler);
+app.get('/getMoviesID/:id',getIDMoviesHandler);
+
 
 //functions
 
@@ -111,18 +115,16 @@ function trendingHandler(req,res){
  })
 }
 
-
-
 function addMovieHandler(req,res){
-    const id=req.body.id;
+    
     const title=req.body.title;
     const time=req.body.time;
     const comment=req.body.comment;
 
-    const sql= `INSERT INTO movie(id,title,time,comment)
-    VALUES ($1 , $2 , $3 , $4);`
+    const sql= `INSERT INTO movie(title,time,comment)
+    VALUES ($1 , $2 , $3);`
 
-    const values =[id,title,time,comment]
+    const values =[title,time,comment]
     client.query(sql,values)
     .then(()=>{
         res.status(201).send("data recieved to movies database")
@@ -130,7 +132,6 @@ function addMovieHandler(req,res){
     .catch()
 
 }
-
 
 function getMoviesHandler(req,res){
     const sql=`SELECT * FROM movie`
@@ -143,6 +144,65 @@ function getMoviesHandler(req,res){
     .catch()
     
 }
+
+
+function editMovieHandler(req,res){
+    const id=req.params.id;
+   
+    const title=req.body.title;
+    const time=req.body.time;
+    const comment=req.body.comment;
+
+    const sql=`UPDATE movie
+    SET title = $2, time = $3, comment=$4
+    WHERE id=$1;`
+
+    let values=[id,title,time,comment];
+
+    client.query(sql,values)
+    .then(result=>{
+        res.send("successfully updated")
+    })
+    .catch()
+
+
+}
+
+function deleteMovieHandler(req,res){
+    const id=req.params.id;
+
+    const sql=`DELETE FROM movie WHERE id=$1;`
+    const values=[id]
+
+    client.query(sql,values)
+    .then(result=>{
+        res.send("sucessfully deleted")
+    })
+    .catch()
+
+
+}
+
+function getIDMoviesHandler(req,res){
+    const id=req.params.id
+
+    const sql=`SELECT * FROM movie WHERE id=$1`
+    let values=[id]
+    client.query(sql,values)
+    
+    .then((result)=>{
+        const data=result.rows;
+        res.json(data)
+    })
+    .catch()
+
+}
+
+
+
+
+
+
 
 
 
@@ -178,4 +238,4 @@ client.connect()
   }))
 .catch()
 
-  
+  //e
