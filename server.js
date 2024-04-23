@@ -15,7 +15,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 const { Client } = require('pg');
-const url = `postgress://jafar:0000@localhost:5432/movies`
+// const url = `postgress://jafar:0000@localhost:5432/movies`
+   const url =`postgres://njxorovv:XpAcwIQm1QWWoBqvzJI3MaViJ_PVXKuY@kala.db.elephantsql.com/njxorovv`
 const client = new Client(url);
 
 //constructor
