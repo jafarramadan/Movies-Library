@@ -2,6 +2,8 @@ const express = require("express");
 
 const app = express();
 
+const  cors = require('cors')
+
 const dataFromJson = require('./Movie data/data.json');
 const { default: axios } = require("axios");
 
@@ -34,7 +36,7 @@ function MovieData12(id,title ,release_date, poster_path , overview){
     this.overview=overview;
     }
 
-
+    app.use(cors());
 
 //routes
 app.get('/',dataHandler);
