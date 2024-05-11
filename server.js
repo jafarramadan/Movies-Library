@@ -2,6 +2,8 @@ const express = require("express");
 
 const app = express();
 
+const  cors = require('cors')
+
 const dataFromJson = require('./Movie data/data.json');
 const { default: axios } = require("axios");
 
@@ -34,7 +36,7 @@ function MovieData12(id,title ,release_date, poster_path , overview){
     this.overview=overview;
     }
 
-
+    app.use(cors());
 
 //routes
 app.get('/',dataHandler);
@@ -118,14 +120,16 @@ function trendingHandler(req,res){
 
 function addMovieHandler(req,res){
     
-    const title=req.body.title;
-    const time=req.body.time;
+    const original_title=req.body.original_title;
+    const release_date=req.body.release_date;
+    const poster_path=req.body.poster_path;
+    const overview=req.body.overview;
     const comment=req.body.comment;
+    
+    const sql= `INSERT INTO movie(original_title, release_date, poster_path, overview, comment )
+    VALUES ($1, $2, $3, $4, $5) RETURNING *;`
 
-    const sql= `INSERT INTO movie(title,time,comment)
-    VALUES ($1 , $2 , $3);`
-
-    const values =[title,time,comment]
+    const values =[original_title,release_date,poster_path,overview,comment]
     client.query(sql,values)
     .then(()=>{
         res.status(201).send("data recieved to movies database")
