@@ -151,28 +151,56 @@ function getMoviesHandler(req,res){
 }
 
 
-function editMovieHandler(req,res){
+// function editMovieHandler(req,res){
+//     const id = req.params.id;
+//     const original_title=req.body.original_title;
+//     const release_date=req.body.release_date;
+//     const poster_path=req.body.poster_path;
+//     const overview=req.body.overview;
+//     const comment=req.body.comment;
+
+//     const sql=`UPDATE movie
+//     SET original_title = $1, release_date = $2, poster_path =$3, overview=$4,comment=$5
+//     WHERE id=${id} RETURNING *;`
+
+//     const values =[original_title,release_date,poster_path,overview,comment]
+
+//     client.query(sql,values)
+//     .then(result=>{
+//         res.send("successfully updated")
+//     })
+//     .catch()
+
+
+//}
+function editMovieHandler(req, res) {
     const id = req.params.id;
-    const original_title=req.body.original_title;
-    const release_date=req.body.release_date;
-    const poster_path=req.body.poster_path;
-    const overview=req.body.overview;
-    const comment=req.body.comment;
+    const { comment } = req.body;
 
-    const sql=`UPDATE movie
-    SET original_title = $1, release_date = $2, poster_path =$3, overview=$4,comment=$5
-    WHERE id=${id} RETURNING *;`
+    const sql = `
+        UPDATE movie
+        SET comment = $1
+        WHERE id = $2
+        RETURNING *;
+    `;
 
-    const values =[original_title,release_date,poster_path,overview,comment]
+    const values = [comment, id];
 
-    client.query(sql,values)
-    .then(result=>{
-        res.send("successfully updated")
-    })
-    .catch()
-
-
+    client.query(sql, values)
+        .then(result => {
+            if (result.rows.length > 0) {
+                const updatedMovie = result.rows[0];
+                res.json(updatedMovie); // Send back the updated movie object
+            } else {
+                res.status(404).send("Movie not found"); // Handle case where movie with given id is not found
+            }
+        })
+        .catch(error => {
+            console.error("Error updating movie:", error);
+            res.status(500).send("Internal Server Error");
+        });
 }
+
 
 
 function deleteMovieHandler(req,res){
