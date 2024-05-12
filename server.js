@@ -152,17 +152,18 @@ function getMoviesHandler(req,res){
 
 
 function editMovieHandler(req,res){
-    const id=req.params.id;
-   
-    const title=req.body.title;
-    const time=req.body.time;
+    const id = req.params.id;
+    const original_title=req.body.original_title;
+    const release_date=req.body.release_date;
+    const poster_path=req.body.poster_path;
+    const overview=req.body.overview;
     const comment=req.body.comment;
 
     const sql=`UPDATE movie
-    SET title = $2, time = $3, comment=$4
-    WHERE id=$1;`
+    SET original_title = $1, release_date = $2, poster_path =$3, overview=$4,comment=$5
+    WHERE id=${id} RETURNING *;`
 
-    let values=[id,title,time,comment];
+    const values =[original_title,release_date,poster_path,overview,comment]
 
     client.query(sql,values)
     .then(result=>{
@@ -172,6 +173,7 @@ function editMovieHandler(req,res){
 
 
 }
+
 
 function deleteMovieHandler(req,res){
     const id=req.params.id;
@@ -243,4 +245,4 @@ client.connect()
   }))
 .catch()
 
-  //e
+ 
